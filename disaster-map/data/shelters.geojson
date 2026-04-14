@@ -1,0 +1,82 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "generated": "2026-04-14T03:13:08.159Z",
+    "count": 3
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.5120066404343,
+          35.61422956325802
+        ]
+      },
+      "properties": {
+        "name": "久敬社塾",
+        "name_kana": "きゅうけいしゃじゅく",
+        "address": "千代ケ丘2-4-14",
+        "type": "一時集合場所",
+        "capacity": 50,
+        "hazards": [
+          "地震",
+          "洪水",
+          "土砂",
+          "津波",
+          "大規模火災"
+        ],
+        "note": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.50654566287997,
+          35.61389110530976
+        ]
+      },
+      "properties": {
+        "name": "有楽自治会館",
+        "name_kana": "ゆうらくじちかいかん",
+        "address": "千代ケ丘5-9-68",
+        "type": "一時集合場所",
+        "capacity": 50,
+        "hazards": [
+          "地震",
+          "洪水",
+          "津波"
+        ],
+        "note": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.50682461261752,
+          35.60917531633455
+        ]
+      },
+      "properties": {
+        "name": "千代ケ丘こども文化センター",
+        "name_kana": "ちよがおかこどもぶんかせんたー",
+        "address": "",
+        "type": "一時集合場所",
+        "capacity": 100,
+        "hazards": [
+          "地震",
+          "洪水",
+          "土砂",
+          "津波",
+          "大規模火災"
+        ],
+        "note": ""
+      }
+    }
+  ]
+}
