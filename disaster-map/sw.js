@@ -1,5 +1,5 @@
 // Service Worker - 有楽自治会 防災マップ
-const APP_CACHE = 'yuraku-app-v1';
+const APP_CACHE = 'yuraku-app-v2';
 const TILE_CACHE = 'yuraku-tiles-v1';
 const MAX_TILE_ENTRIES = 800;
 
@@ -57,6 +57,26 @@ self.addEventListener('fetch', function (event) {
     return;
   }
 
+  // 管理ページは常に最新をネット取得 (編集作業用、オフライン不要)
+  if (url.origin === self.location.origin &&
+      (url.pathname.endsWith('/admin.html') ||
+       url.pathname.endsWith('/js/admin.js'))) {
+    event.respondWith(
+      fetch(req, { cache: 'no-store' }).catch(function () {
+        return caches.match(req);
+      })
+    );
+    return;
+  }
+
+  // データファイルは stale-while-revalidate (キャッシュから即返すが裏で更新)
+  if (url.origin === self.location.origin &&
+      (url.pathname.endsWith('/data/yuraku-boundary.geojson') ||
+       url.pathname.endsWith('/data/shelters.geojson'))) {
+    event.respondWith(dataHandler(req));
+    return;
+  }
+
   // 同一オリジンのナビゲーション: ネット優先、失敗時は offline.html
   if (req.mode === 'navigate') {
     event.respondWith(
@@ -84,6 +104,18 @@ self.addEventListener('fetch', function (event) {
     );
   }
 });
+
+async function dataHandler(req) {
+  const cache = await caches.open(APP_CACHE);
+  const cached = await cache.match(req);
+  const networkFetch = fetch(req, { cache: 'no-store' }).then(async function (res) {
+    if (res && res.ok) {
+      await cache.put(req, res.clone());
+    }
+    return res;
+  }).catch(function () { return cached; });
+  return cached || networkFetch;
+}
 
 async function tileHandler(req) {
   const cache = await caches.open(TILE_CACHE);
