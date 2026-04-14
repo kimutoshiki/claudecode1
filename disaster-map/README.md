@@ -53,49 +53,43 @@ python3 -m http.server 8000
 3. 公開 URL の例: `https://<ユーザー名>.github.io/claudecode1/disaster-map/`
 4. スマホでその URL にアクセスし、ブラウザのメニューから「ホーム画面に追加」
 
-## 有楽自治会の境界を描く (管理者作業)
+## 管理ページで境界と避難所を編集する
 
-初期状態の `data/yuraku-boundary.geojson` は **仮の矩形**です。実際の自治会範囲に差し替えてください。
+PC のブラウザで `https://kimutoshiki.github.io/claudecode1/disaster-map/admin.html` を開くと、
+**「境界を描く」**と**「避難所を登録する」**の2つのタブで編集できます。
 
-1. PC のブラウザで `https://.../disaster-map/admin.html` を開く
-2. 左上のツールバーから**多角形**アイコンを選ぶ
-3. 地図を順にクリックして境界の頂点を置き、最後にダブルクリックで確定
-4. ツールバーの **「GeoJSON をダウンロード」** をクリック
-5. ダウンロードした `yuraku-boundary.geojson` で `data/yuraku-boundary.geojson` を**上書き**
-6. `sw.js` の `APP_CACHE = 'yuraku-app-v1'` を `v2` に上げる (キャッシュ更新のため)
-7. Git で commit → push
+### 境界を描く
+1. 「境界を描く」タブを選択
+2. 地図左上のツールバーから**多角形**アイコンをクリック
+3. 地図を順にクリックして頂点を置き、最後にダブルクリックで確定
+4. 「境界をダウンロード」→ `yuraku-boundary.geojson` が手元に保存される
+5. 下記の「ダウンロードしたファイルをGitHubに反映する」手順で差し替え
 
-既存の境界を編集する場合は「既存の境界を読み込む」ボタンから読み込めます。
+### 避難所を登録する
+1. 「避難所を登録する」タブを選択
+2. 「避難所を追加」ボタンを押してから、地図上の避難所の位置をタップ
+3. 出てくるフォームに名称・住所・収容人数・対応災害などを入力して「保存」
+4. 必要なだけ繰り返す (既存のピンをタップすると再編集できます)
+5. 「避難所をダウンロード」→ `shelters.geojson` が手元に保存される
+6. 下記の手順でGitHubに反映
 
-## 避難所データを差し替える
+### ダウンロードしたファイルをGitHubに反映する (初心者向け)
 
-初期の `data/shelters.geojson` は**ダミー 4 件**です。本番では川崎市のオープンデータから取得してください。
+コマンド操作が不要な方法です。
 
-- 川崎市オープンデータカタログ (避難所・指定緊急避難場所)
-- フォーマットは以下の GeoJSON スキーマに合わせてください:
+1. ブラウザで https://github.com/kimutoshiki/claudecode1/tree/main/disaster-map/data を開く
+2. 右上の **「Add file」** → **「Upload files」** をクリック
+3. ダウンロードした `yuraku-boundary.geojson` または `shelters.geojson` を **ドラッグ＆ドロップ**
+   (同名ファイルは自動で上書きされます)
+4. 画面下の **「Commit changes」** をクリック (メッセージはそのままでOK)
+5. 1〜3分待つと本番サイトに自動反映されます
+6. スマホでサイトを開いてリロード (Service Worker のキャッシュを更新するため、
+   一度ブラウザを完全終了してから開き直すと確実です)
 
-```json
-{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [経度, 緯度] },
-      "properties": {
-        "name": "○○小学校",
-        "name_kana": "○○ショウガッコウ",
-        "address": "川崎市麻生区...",
-        "type": "指定避難所",
-        "capacity": 500,
-        "hazards": ["地震", "洪水"],
-        "note": ""
-      }
-    }
-  ]
-}
-```
-
-差し替えたら `sw.js` の `APP_CACHE` バージョンを上げて commit・push してください。
+### 慣れてきたら: 完全キャッシュ更新
+アプリ本体のファイルを変更した時は、住民が古いバージョンを使い続けないよう
+`disaster-map/sw.js` の `APP_CACHE = 'yuraku-app-v1'` を `v2` に上げてください
+(データファイルだけの差し替えなら不要)。
 
 ## 技術メモ
 

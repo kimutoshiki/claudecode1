@@ -2,40 +2,198 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <title>境界描画 - 有楽自治会 防災マップ</title>
+  <title>管理ページ - 有楽自治会 防災マップ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="./vendor/leaflet-geoman/leaflet-geoman.css">
   <style>
-    html, body { margin: 0; height: 100%; font-family: sans-serif; }
-    body { display: flex; flex-direction: column; }
-    header { background: #0b5394; color: #fff; padding: 12px 16px; font-weight: 700; }
-    header .sub { font-size: 13px; font-weight: 400; opacity: 0.9; }
-    main { flex: 1; position: relative; }
+    :root { --primary: #0b5394; --primary-dark: #073a6b; --danger: #c62828; }
+    html, body { margin: 0; height: 100%; font-family: -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; color: #111; }
+    body { display: flex; flex-direction: column; background: #fff; }
+    header.app { background: var(--primary); color: #fff; padding: 10px 16px; }
+    header.app .title { font-weight: 700; font-size: 18px; }
+    header.app .sub { font-size: 12px; opacity: 0.9; }
+
+    .tabs { display: flex; background: #e8eef5; border-bottom: 2px solid #c0c8d3; }
+    .tabs button {
+      flex: 1; padding: 12px; border: 0; background: transparent;
+      font-size: 16px; font-weight: 700; color: #555; cursor: pointer;
+      border-bottom: 4px solid transparent;
+    }
+    .tabs button.active { color: var(--primary); border-bottom-color: var(--primary); background: #fff; }
+
+    .toolbar { padding: 10px; background: #f4f4f4; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; border-bottom: 1px solid #ccc; }
+    .toolbar button {
+      padding: 10px 14px; font-size: 15px; font-weight: 700;
+      border: 2px solid var(--primary-dark); background: var(--primary);
+      color: #fff; border-radius: 8px; cursor: pointer;
+    }
+    .toolbar button.secondary { background: #fff; color: var(--primary); }
+    .toolbar button.danger { background: #fff; color: var(--danger); border-color: var(--danger); }
+    .toolbar button.active { background: #ffb300; border-color: #b38600; color: #222; }
+    .toolbar button[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+    .status { padding: 8px 12px; font-size: 14px; color: #333; background: #fffbe8; border-bottom: 1px solid #e9d77a; min-height: 20px; }
+    .status.error { background: #ffebee; color: var(--danger); font-weight: 700; }
+
+    .help { padding: 8px 12px; font-size: 13px; color: #333; background: #f0f4f8; border-bottom: 1px solid #d0d8e2; line-height: 1.6; }
+    .help code { background: #fff; padding: 1px 5px; border: 1px solid #ccc; border-radius: 3px; font-size: 12px; }
+    .help a { color: var(--primary); }
+    .help details summary { cursor: pointer; font-weight: 700; padding: 4px 0; }
+    .help details ol { margin: 6px 0 6px 20px; padding: 0; }
+    .help details li { margin: 3px 0; }
+
+    main { flex: 1; position: relative; min-height: 0; }
     #map { position: absolute; inset: 0; }
-    .toolbar { padding: 10px; background: #eee; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-    .toolbar button { padding: 10px 16px; font-size: 15px; font-weight: 700; border: 2px solid #073a6b; background: #0b5394; color: #fff; border-radius: 8px; cursor: pointer; }
-    .toolbar button.secondary { background: #fff; color: #0b5394; }
-    .status { font-size: 14px; color: #333; }
-    .status.error { color: #c62828; font-weight: 700; }
-    .help { font-size: 13px; color: #555; padding: 0 10px 8px; background: #eee; }
+    .crosshair { cursor: crosshair !important; }
+
+    /* 避難所マーカー (app.css と同一の見た目) */
+    .shelter-marker { background: transparent; border: 0; }
+    .shelter-pin {
+      width: 44px; height: 44px; background: #1b5e20; border: 3px solid #fff;
+      border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .shelter-pin > span {
+      display: inline-block; transform: rotate(45deg);
+      color: #fff; font-size: 20px; font-weight: 800; line-height: 1;
+    }
+    .shelter-marker.unsaved .shelter-pin { background: #e65100; }
+
+    /* 避難所編集モーダル */
+    .modal {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+      z-index: 5000; display: flex; align-items: flex-start; justify-content: center;
+      padding: 30px 12px; overflow-y: auto;
+    }
+    .modal[hidden] { display: none; }
+    .modal-box {
+      background: #fff; width: 100%; max-width: 460px; border-radius: 10px;
+      padding: 16px 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .modal-box h2 { margin: 0 0 10px; color: var(--primary); font-size: 18px; }
+    .modal-box label { display: block; font-size: 14px; font-weight: 700; color: #333; margin: 10px 0 3px; }
+    .modal-box input[type=text], .modal-box input[type=number], .modal-box select, .modal-box textarea {
+      width: 100%; box-sizing: border-box; font-size: 15px; padding: 8px 10px;
+      border: 1px solid #aaa; border-radius: 6px; font-family: inherit;
+    }
+    .modal-box fieldset { margin: 10px 0 0; padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; }
+    .modal-box fieldset legend { font-size: 14px; font-weight: 700; color: #333; padding: 0 6px; }
+    .modal-box fieldset label { display: inline-flex; align-items: center; margin: 4px 12px 4px 0; font-weight: 500; font-size: 14px; }
+    .modal-box fieldset input { margin-right: 4px; transform: scale(1.3); }
+    .form-actions { display: flex; gap: 8px; margin-top: 14px; justify-content: flex-end; flex-wrap: wrap; }
+    .form-actions button {
+      padding: 10px 16px; font-size: 15px; font-weight: 700; border-radius: 8px; cursor: pointer;
+      border: 2px solid var(--primary-dark); background: var(--primary); color: #fff;
+    }
+    .form-actions button.secondary { background: #fff; color: #444; border-color: #888; }
+    .form-actions button.danger { background: #fff; color: var(--danger); border-color: var(--danger); }
+
+    /* 避難所モード時は geoman ツールバーを隠す */
+    body[data-mode="shelter"] .leaflet-pm-toolbar { display: none; }
   </style>
 </head>
-<body>
-  <header>
-    境界描画 (管理用)
-    <div class="sub">地図上で有楽自治会の範囲を順にクリックしてポリゴンを作り、GeoJSON をダウンロードしてください。</div>
+<body data-mode="boundary">
+  <header class="app">
+    <div class="title">管理ページ - 有楽自治会 防災マップ</div>
+    <div class="sub">自治会境界の描画と、避難所の追加・編集ができます</div>
   </header>
-  <div class="toolbar">
-    <button id="btn-load" class="secondary" type="button">既存の境界を読み込む</button>
-    <button id="btn-download" type="button">GeoJSON をダウンロード</button>
-    <span id="status" class="status">左上のツールバーから多角形ツールを選んで描画できます。</span>
+
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-mode="boundary" type="button">境界を描く</button>
+    <button class="tab" data-mode="shelter" type="button">避難所を登録する</button>
   </div>
-  <div class="help">
-    使い方: 左上の多角形アイコンをクリック → 地図を順にクリックして頂点を置く → 最後にダブルクリックで確定 →
-    「GeoJSON をダウンロード」 → 取得したファイルを <code>data/yuraku-boundary.geojson</code> に置き換えて Git にコミット・push してください。
+
+  <div class="toolbar" id="boundary-tools">
+    <button id="btn-load-boundary" class="secondary" type="button">既存の境界を読み込む</button>
+    <button id="btn-download-boundary" type="button">境界をダウンロード</button>
   </div>
+  <div class="toolbar" id="shelter-tools" hidden>
+    <button id="btn-add-shelter" type="button">避難所を追加</button>
+    <button id="btn-load-shelters" class="secondary" type="button">既存の避難所を読み込む</button>
+    <button id="btn-download-shelters" type="button">避難所をダウンロード</button>
+    <button id="btn-clear-shelters" class="danger" type="button">編集中マーカー全消去</button>
+  </div>
+
+  <div id="status" class="status">ようこそ。タブで作業モードを切り替えてください。</div>
+
+  <div class="help" id="help-boundary">
+    <b>使い方:</b> 地図の左上にあるツールバーから <b>多角形</b> アイコンをクリック →
+    地図を順にクリックして頂点を置く → 最後にダブルクリックで確定 →
+    「境界をダウンロード」で <code>yuraku-boundary.geojson</code> を取得します。
+    <details>
+      <summary>ダウンロードしたファイルを反映する方法 (初心者向け)</summary>
+      <ol>
+        <li>ブラウザで <a href="https://github.com/kimutoshiki/claudecode1/tree/main/disaster-map/data" target="_blank" rel="noopener">GitHubの data フォルダ</a> を開く</li>
+        <li>右上の <b>「Add file」→「Upload files」</b> をクリック</li>
+        <li>ダウンロードした <code>yuraku-boundary.geojson</code> をドラッグ＆ドロップ (同名なので上書きされます)</li>
+        <li>下の <b>「Commit changes」</b> ボタンを押す (コミットメッセージはそのままでOK)</li>
+        <li>1〜3分待つと本番サイトに自動反映されます</li>
+      </ol>
+    </details>
+  </div>
+  <div class="help" id="help-shelter" hidden>
+    <b>使い方:</b> 「避難所を追加」ボタンを押してから地図上の避難所の場所をタップ →
+    名称や住所などを入力して保存 → 全部登録したら「避難所をダウンロード」で
+    <code>shelters.geojson</code> を取得します。既存のマーカーをタップすると編集できます。
+    <details>
+      <summary>ダウンロードしたファイルを反映する方法 (初心者向け)</summary>
+      <ol>
+        <li>ブラウザで <a href="https://github.com/kimutoshiki/claudecode1/tree/main/disaster-map/data" target="_blank" rel="noopener">GitHubの data フォルダ</a> を開く</li>
+        <li>右上の <b>「Add file」→「Upload files」</b> をクリック</li>
+        <li>ダウンロードした <code>shelters.geojson</code> をドラッグ＆ドロップ (同名なので上書きされます)</li>
+        <li>下の <b>「Commit changes」</b> ボタンを押す</li>
+        <li>1〜3分待つと本番サイトに反映されます</li>
+      </ol>
+    </details>
+  </div>
+
   <main><div id="map"></div></main>
+
+  <div id="shelter-modal" class="modal" hidden aria-labelledby="modal-title" role="dialog">
+    <div class="modal-box">
+      <h2 id="modal-title">避難所の情報</h2>
+      <form id="shelter-form">
+        <label>名称 <span style="color:#c62828">*</span>
+          <input name="name" type="text" required autocomplete="off">
+        </label>
+        <label>よみ (任意)
+          <input name="name_kana" type="text" autocomplete="off">
+        </label>
+        <label>住所
+          <input name="address" type="text" autocomplete="off">
+        </label>
+        <label>種別
+          <select name="type">
+            <option>指定避難所</option>
+            <option>緊急避難場所</option>
+            <option>一時集合場所</option>
+            <option>自治会独自</option>
+          </select>
+        </label>
+        <label>収容人数 (任意)
+          <input name="capacity" type="number" min="0" inputmode="numeric">
+        </label>
+        <fieldset>
+          <legend>対応災害 (複数選択可)</legend>
+          <label><input type="checkbox" name="hazards" value="地震">地震</label>
+          <label><input type="checkbox" name="hazards" value="洪水">洪水</label>
+          <label><input type="checkbox" name="hazards" value="土砂">土砂</label>
+          <label><input type="checkbox" name="hazards" value="津波">津波</label>
+          <label><input type="checkbox" name="hazards" value="大規模火災">大規模火災</label>
+        </fieldset>
+        <label>備考
+          <textarea name="note" rows="2"></textarea>
+        </label>
+        <div class="form-actions">
+          <button type="button" id="btn-cancel" class="secondary">キャンセル</button>
+          <button type="button" id="btn-delete" class="danger">この避難所を削除</button>
+          <button type="submit">保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script src="./vendor/leaflet/leaflet.js"></script>
   <script src="./vendor/leaflet-geoman/leaflet-geoman.min.js"></script>
