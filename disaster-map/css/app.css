@@ -1,0 +1,189 @@
+/* 有楽自治会 防災マップ - 高齢者向けスタイル */
+:root {
+  --fg: #111;
+  --bg: #fff;
+  --primary: #0b5394;
+  --primary-dark: #073a6b;
+  --accent: #e53935;
+  --muted: #666;
+  --border: #bbb;
+  --btn-bg: #0b5394;
+  --btn-fg: #fff;
+  --btn-disabled: #9e9e9e;
+  --base-size: 18px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "ヒラギノ角ゴ ProN", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+  font-size: var(--base-size);
+  color: var(--fg);
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.app-header {
+  background: var(--primary);
+  color: #fff;
+  padding: 12px 16px;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  flex: 0 0 auto;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  z-index: 1000;
+}
+
+main#map-wrap {
+  flex: 1 1 auto;
+  position: relative;
+  min-height: 0;
+}
+
+#map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.btnbar {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+  padding: 8px;
+  background: #f2f2f2;
+  border-top: 2px solid var(--border);
+}
+
+.btnbar button {
+  min-height: 72px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--btn-fg);
+  background: var(--btn-bg);
+  border: 2px solid var(--primary-dark);
+  border-radius: 12px;
+  padding: 8px 4px;
+  cursor: pointer;
+  line-height: 1.2;
+  touch-action: manipulation;
+}
+
+.btnbar button:active { background: var(--primary-dark); }
+.btnbar button:focus-visible { outline: 4px solid #ffb300; outline-offset: 2px; }
+.btnbar button[disabled] {
+  background: var(--btn-disabled);
+  border-color: #777;
+  cursor: not-allowed;
+}
+
+.btnbar .btn-icon { display: block; font-size: 24px; margin-bottom: 2px; }
+
+/* トースト通知 */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 104px;
+  transform: translateX(-50%) translateY(12px);
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: 600;
+  max-width: 92%;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+  z-index: 2000;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.error { background: rgba(197, 30, 30, 0.95); }
+
+/* 避難所マーカー */
+.shelter-marker { background: transparent; border: 0; }
+.shelter-pin {
+  width: 44px;
+  height: 44px;
+  background: #1b5e20;
+  border: 3px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.shelter-pin > span {
+  display: inline-block;
+  transform: rotate(45deg);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* 現在地マーカー */
+.user-marker { background: transparent; border: 0; }
+.user-dot {
+  width: 24px;
+  height: 24px;
+  background: #1976d2;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(25,118,210,0.3);
+  margin: 3px;
+}
+
+/* ポップアップ */
+.leaflet-popup-content { margin: 12px 14px; font-size: 16px; }
+.popup-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; color: #073a6b; }
+.popup-type { display: inline-block; background: #1b5e20; color: #fff; font-size: 13px; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; }
+.popup-row { margin: 4px 0; line-height: 1.4; }
+.popup-row b { color: #555; margin-right: 4px; }
+.popup-note { margin-top: 6px; padding-top: 6px; border-top: 1px solid #eee; color: #666; font-size: 14px; }
+
+/* ホーム画面追加ヒント */
+#install-hint {
+  position: fixed;
+  top: 64px;
+  left: 12px;
+  right: 12px;
+  background: #fffde7;
+  border: 2px solid #ffb300;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #5d4037;
+  cursor: pointer;
+  z-index: 1500;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* Leaflet ズームコントロールを大きく */
+.leaflet-control-zoom.big-zoom a {
+  width: 44px !important;
+  height: 44px !important;
+  line-height: 44px !important;
+  font-size: 22px !important;
+}
+.leaflet-control-attribution { font-size: 11px; }
+
+@media (max-width: 380px) {
+  .btnbar button { font-size: 16px; min-height: 64px; }
+  .app-header { font-size: 18px; }
+}

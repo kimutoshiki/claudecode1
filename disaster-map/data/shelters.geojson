@@ -1,0 +1,60 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "note": "ダミーデータ。実運用前に川崎市オープンデータ (指定避難所・指定緊急避難場所) から有楽自治会付近を抽出して差し替えてください。"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [139.4955, 35.6045] },
+      "properties": {
+        "name": "有楽小学校 (ダミー)",
+        "name_kana": "ユウラクショウガッコウ",
+        "address": "川崎市麻生区有楽1-1-1",
+        "type": "指定避難所",
+        "capacity": 500,
+        "hazards": ["地震", "洪水"],
+        "note": "体育館と校庭を避難スペースとして利用"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [139.4978, 35.6022] },
+      "properties": {
+        "name": "有楽中学校 (ダミー)",
+        "name_kana": "ユウラクチュウガッコウ",
+        "address": "川崎市麻生区有楽2-3-4",
+        "type": "指定避難所",
+        "capacity": 800,
+        "hazards": ["地震", "洪水", "土砂"],
+        "note": "耐震補強済み"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [139.4930, 35.6008] },
+      "properties": {
+        "name": "有楽公園 (ダミー)",
+        "name_kana": "ユウラクコウエン",
+        "address": "川崎市麻生区有楽3-1",
+        "type": "緊急避難場所",
+        "capacity": 300,
+        "hazards": ["地震"],
+        "note": "一時集合場所"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [139.4995, 35.6060] },
+      "properties": {
+        "name": "有楽町内会館 (ダミー)",
+        "name_kana": "ユウラクチョウナイカイカン",
+        "address": "川崎市麻生区有楽1-5-2",
+        "type": "指定避難所",
+        "capacity": 80,
+        "hazards": ["地震"],
+        "note": "自治会管理施設"
+      }
+    }
+  ]
+}
