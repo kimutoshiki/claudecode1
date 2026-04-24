@@ -1,0 +1,66 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "shakai-flix/**"
+      - "disaster-map/**"
+      - ".github/workflows/deploy-gh-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: shakai-flix/pnpm-lock.yaml
+
+      - name: Install deps
+        working-directory: shakai-flix
+        run: pnpm install --frozen-lockfile
+
+      - name: Build (static export)
+        working-directory: shakai-flix
+        env:
+          GH_PAGES: "true"
+        run: pnpm build
+
+      - name: Stage artifact
+        run: |
+          mkdir -p _site/shakai-flix
+          cp -r shakai-flix/out/. _site/shakai-flix/
+          if [ -d disaster-map ]; then cp -r disaster-map _site/; fi
+          touch _site/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

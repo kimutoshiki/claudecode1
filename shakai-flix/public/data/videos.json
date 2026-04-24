@@ -1,0 +1,72 @@
+[
+  {
+    "id": "10min-chiri-eu",
+    "series": "10min.ボックス 地理",
+    "episode": 1,
+    "title": "なぜEUとしてまとまる必要があるの？〜世界の諸地域 ヨーロッパ州〜",
+    "description": "言葉や歴史、文化、宗教が違う国々が隣り合うヨーロッパ。なぜ EU として統合する必要があるのかを、経済や生活、格差などの観点から探る10分番組。",
+    "thumbnailUrl": "/thumbnails/placeholder-geography.svg",
+    "sourceUrl": "https://edu.web.nhk/school/watch/bangumi/?das_id=D0005120455_00000",
+    "durationSec": 600,
+    "category": "geography",
+    "grade": [1],
+    "tags": ["ヨーロッパ州", "EU", "経済統合", "世界の諸地域"],
+    "curriculumCodes": ["中社会-地-ヨーロッパ州"]
+  },
+  {
+    "id": "clip-eu-what",
+    "series": "NHK for School クリップ集",
+    "episode": 1,
+    "title": "EUってなに？",
+    "description": "EU の加盟国間では、国境を越えた人や物の移動を自由にしたり、共通の通貨を使用したりすることで経済の成長を促している。EU の仕組みを短くまとめたクリップ。",
+    "thumbnailUrl": "/thumbnails/placeholder-geography.svg",
+    "sourceUrl": "https://edu.web.nhk/school/watch/clip/?das_id=D0005310577_00000",
+    "durationSec": 90,
+    "category": "geography",
+    "grade": [1],
+    "tags": ["ヨーロッパ州", "EU", "ユーロ", "シェンゲン"],
+    "curriculumCodes": ["中社会-地-ヨーロッパ州"]
+  },
+  {
+    "id": "clip-eu-founding",
+    "series": "NHK for School クリップ集",
+    "episode": 2,
+    "title": "EUが発足した理由",
+    "description": "EU は、ヨーロッパでたびたび争いの原因となってきた石炭などの資源を共同で管理する組織（ECSC）から発展した。EU 成立の歴史的背景を紹介するクリップ。",
+    "thumbnailUrl": "/thumbnails/placeholder-geography.svg",
+    "sourceUrl": "https://edu.web.nhk/school/watch/clip/?das_id=D0005310580_00000",
+    "durationSec": 90,
+    "category": "geography",
+    "grade": [1],
+    "tags": ["ヨーロッパ州", "EU", "歴史的経緯", "ECSC"],
+    "curriculumCodes": ["中社会-地-ヨーロッパ州"]
+  },
+  {
+    "id": "clip-eu-aircraft",
+    "series": "NHK for School クリップ集",
+    "episode": 3,
+    "title": "国境を越えた企業の発展・航空機",
+    "description": "ヨーロッパを代表する航空機メーカーは、フランス・ドイツ・イギリス・スペインの4カ国が共同で立ち上げた企業。工場は各国にあり、国境を越えた分業の典型例。",
+    "thumbnailUrl": "/thumbnails/placeholder-geography.svg",
+    "sourceUrl": "https://edu.web.nhk/school/watch/clip/?das_id=D0005310579_00000",
+    "durationSec": 90,
+    "category": "geography",
+    "grade": [1],
+    "tags": ["ヨーロッパ州", "EU", "国際分業", "航空機産業"],
+    "curriculumCodes": ["中社会-地-ヨーロッパ州"]
+  },
+  {
+    "id": "clip-eu-issues",
+    "series": "NHK for School クリップ集",
+    "episode": 4,
+    "title": "EUの課題",
+    "description": "イギリスへのポーランドからの出稼ぎ労働で起きた社会問題や、ギリシャの財政破綻によるユーロ価値低下など、EU 統合がもたらした課題を紹介するクリップ。",
+    "thumbnailUrl": "/thumbnails/placeholder-geography.svg",
+    "sourceUrl": "https://edu.web.nhk/school/watch/clip/?das_id=D0005310581_00000",
+    "durationSec": 90,
+    "category": "geography",
+    "grade": [1],
+    "tags": ["ヨーロッパ州", "EU", "経済格差", "移民", "財政問題"],
+    "curriculumCodes": ["中社会-地-ヨーロッパ州"]
+  }
+]

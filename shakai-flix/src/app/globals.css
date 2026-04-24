@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0f0f0f;
+  --surface: #1a1a1a;
+  --surface-hover: #242424;
+  --foreground: #f5f5f5;
+  --muted: #9ca3af;
+  --accent: #e50914;
+  --accent-hover: #f40612;
+  --border: rgba(255, 255, 255, 0.08);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-border: var(--border);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+body {
+  font-family:
+    var(--font-geist-sans),
+    system-ui,
+    -apple-system,
+    "Hiragino Sans",
+    "Noto Sans JP",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
