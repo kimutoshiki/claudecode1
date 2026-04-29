@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Klee_One } from "next/font/google";
 import { FontSizeBoot } from "@/components/layout/FontSizeBoot";
 import { TopNav } from "@/components/layout/TopNav";
 import { withBasePath } from "@/lib/utils";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const kleeOne = Klee_One({
+  variable: "--font-klee",
   subsets: ["latin"],
+  weight: ["400", "600"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -44,7 +46,7 @@ export default function RootLayout({
   return (
     <html
       lang="ja"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${kleeOne.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
         <FontSizeBoot />

@@ -43,26 +43,26 @@ export function HeroCarousel({ videos, intervalMs = 5000 }: HeroCarouselProps) {
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-transparent" />
       <div className="relative z-10 mx-auto flex h-full w-full max-w-[1400px] flex-col justify-end px-6 pb-16">
-        <p className="text-xs font-semibold tracking-[0.2em] text-[color:var(--accent)]">
+        <p className="text-sm font-semibold tracking-[0.2em] text-[color:var(--accent)]">
           FEATURED · {current.series}
         </p>
-        <h1 className="mt-2 max-w-2xl text-3xl font-bold leading-tight sm:text-5xl">
+        <h1 className="mt-2 max-w-2xl text-4xl font-bold leading-tight sm:text-6xl">
           {current.title}
         </h1>
-        <p className="mt-3 max-w-xl text-sm text-[color:var(--muted)] sm:text-base">
+        <p className="mt-4 max-w-xl text-base leading-relaxed text-[color:var(--muted)] sm:text-lg">
           {current.description}
         </p>
         <div className="mt-6 flex gap-3">
           <Link
             href={`/watch/${current.id}`}
-            className="inline-flex items-center gap-2 rounded bg-[color:var(--foreground)] px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-white"
+            className="inline-flex items-center gap-2 rounded bg-[color:var(--foreground)] px-6 py-3 text-base font-semibold text-black transition hover:bg-white"
           >
-            <Play size={16} fill="currentColor" />
+            <Play size={18} fill="currentColor" />
             視聴する
           </Link>
           <Link
             href={`/video/${current.id}`}
-            className="inline-flex items-center gap-2 rounded bg-[color:var(--surface)]/70 px-5 py-2.5 text-sm font-semibold text-[color:var(--foreground)] backdrop-blur transition hover:bg-[color:var(--surface-hover)]"
+            className="inline-flex items-center gap-2 rounded bg-[color:var(--surface)]/70 px-6 py-3 text-base font-semibold text-[color:var(--foreground)] backdrop-blur transition hover:bg-[color:var(--surface-hover)]"
           >
             詳細を見る
           </Link>

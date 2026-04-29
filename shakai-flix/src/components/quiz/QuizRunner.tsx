@@ -5,8 +5,8 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2, ExternalLink, RotateCcw, XCircle } from "lucide-react";
 import { getDB } from "@/lib/db";
 import {
-  PASS_THRESHOLD,
   loadQuiz,
+  passThresholdFor,
   prepareQuestions,
   scoreAttempt,
   type ShuffledQuestion,
@@ -148,17 +148,18 @@ export function QuizRunner({ video }: Props) {
   const isRevealed = !!revealed[question.id];
   const answeredCount = Object.keys(revealed).length;
   const progressPct = ((currentIndex + 1) / questions.length) * 100;
+  const threshold = passThresholdFor(questions.length);
 
   return (
-    <div className="mx-auto max-w-2xl space-y-5 px-4 py-8">
+    <div className="mx-auto max-w-2xl space-y-6 px-4 py-8">
       <div className="space-y-2">
-        <div className="flex items-center justify-between text-xs text-[color:var(--muted)]">
+        <div className="flex items-center justify-between text-sm text-[color:var(--muted)]">
           <span>
             問題 {currentIndex + 1} / {questions.length}
           </span>
           <span>回答済み {answeredCount}</span>
         </div>
-        <div className="h-1 overflow-hidden rounded-full bg-[color:var(--surface)]">
+        <div className="h-1.5 overflow-hidden rounded-full bg-[color:var(--surface)]">
           <div
             className="h-full bg-[color:var(--accent)] transition-all"
             style={{ width: `${progressPct}%` }}
@@ -166,9 +167,9 @@ export function QuizRunner({ video }: Props) {
         </div>
       </div>
 
-      <div className="space-y-4 rounded-lg border border-[color:var(--border)] bg-[color:var(--surface)] p-5">
-        <h2 className="text-lg font-semibold">{question.question}</h2>
-        <ul className="space-y-2">
+      <div className="space-y-5 rounded-lg border border-[color:var(--border)] bg-[color:var(--surface)] p-6">
+        <h2 className="text-2xl font-semibold leading-snug">{question.question}</h2>
+        <ul className="space-y-3">
           {question.choiceOrder.map((origIndex) => {
             const label = question.choices[origIndex];
             const isChosen = chosen === origIndex;
@@ -181,7 +182,7 @@ export function QuizRunner({ video }: Props) {
                   disabled={isRevealed}
                   onClick={() => handleSelect(question.id, origIndex)}
                   className={cn(
-                    "flex w-full items-center justify-between gap-3 rounded-md border px-4 py-2.5 text-left text-sm transition",
+                    "flex w-full items-center justify-between gap-3 rounded-md border px-5 py-3.5 text-left text-lg leading-snug transition",
                     !showState &&
                       "border-[color:var(--border)] bg-[color:var(--background)] hover:border-[color:var(--accent)]",
                     showState && isCorrect &&
@@ -193,8 +194,8 @@ export function QuizRunner({ video }: Props) {
                   )}
                 >
                   <span>{label}</span>
-                  {showState && isCorrect && <CheckCircle2 size={16} />}
-                  {showState && !isCorrect && isChosen && <XCircle size={16} />}
+                  {showState && isCorrect && <CheckCircle2 size={20} />}
+                  {showState && !isCorrect && isChosen && <XCircle size={20} />}
                 </button>
               </li>
             );
@@ -202,13 +203,13 @@ export function QuizRunner({ video }: Props) {
         </ul>
 
         {isRevealed && (
-          <div className="rounded-md bg-[color:var(--background)] p-3 text-sm">
-            <p className="mb-1 text-xs font-semibold text-[color:var(--accent)]">
+          <div className="rounded-md bg-[color:var(--background)] p-4 text-base leading-relaxed">
+            <p className="mb-1 text-sm font-semibold text-[color:var(--accent)]">
               解説
             </p>
             <p className="text-[color:var(--muted)]">{question.explanation}</p>
             {question.timestampSec !== undefined && (
-              <p className="mt-2 text-xs">
+              <p className="mt-2 text-sm">
                 該当時刻:{" "}
                 <Link
                   href={`/watch/${video.id}`}
@@ -227,20 +228,20 @@ export function QuizRunner({ video }: Props) {
             disabled={!isRevealed}
             onClick={goNext}
             className={cn(
-              "inline-flex items-center gap-1.5 rounded px-4 py-2 text-sm font-semibold transition",
+              "inline-flex items-center gap-2 rounded px-5 py-2.5 text-base font-semibold transition",
               isRevealed
                 ? "bg-[color:var(--accent)] text-white hover:bg-[color:var(--accent-hover)]"
                 : "cursor-not-allowed bg-[color:var(--surface-hover)] text-[color:var(--muted)]",
             )}
           >
             {currentIndex < questions.length - 1 ? "次の問題" : "結果を見る"}
-            <ArrowRight size={14} />
+            <ArrowRight size={16} />
           </button>
         </div>
       </div>
 
-      <p className="text-center text-xs text-[color:var(--muted)]">
-        合格ライン: {PASS_THRESHOLD} / {questions.length} 問正解
+      <p className="text-center text-base text-[color:var(--muted)]">
+        合格ライン: {threshold} / {questions.length} 問正解（80% 以上）
       </p>
     </div>
   );
@@ -266,6 +267,7 @@ function QuizResult({
   answers,
   onRetry,
 }: ResultProps) {
+  const threshold = passThresholdFor(total);
   return (
     <div className="mx-auto max-w-2xl space-y-6 px-4 py-8">
       <section
@@ -278,40 +280,40 @@ function QuizResult({
       >
         {passed ? (
           <>
-            <CheckCircle2 className="mx-auto text-emerald-400" size={44} />
-            <h1 className="mt-3 text-2xl font-bold">合格！</h1>
-            <p className="mt-1 text-sm text-[color:var(--muted)]">
+            <CheckCircle2 className="mx-auto text-emerald-400" size={48} />
+            <h1 className="mt-3 text-3xl font-bold">合格！</h1>
+            <p className="mt-2 text-lg text-[color:var(--muted)]">
               {correct} / {total} 問正解 — ✅バッジを獲得しました
             </p>
           </>
         ) : (
           <>
-            <XCircle className="mx-auto text-rose-400" size={44} />
-            <h1 className="mt-3 text-2xl font-bold">もう一歩！</h1>
-            <p className="mt-1 text-sm text-[color:var(--muted)]">
-              {correct} / {total} 問正解（合格ライン: {PASS_THRESHOLD} 問）
+            <XCircle className="mx-auto text-rose-400" size={48} />
+            <h1 className="mt-3 text-3xl font-bold">もう一歩！</h1>
+            <p className="mt-2 text-lg text-[color:var(--muted)]">
+              {correct} / {total} 問正解（合格ライン: {threshold} 問）
             </p>
           </>
         )}
-        <div className="mt-4 flex flex-wrap justify-center gap-2">
+        <div className="mt-5 flex flex-wrap justify-center gap-2">
           <button
             type="button"
             onClick={onRetry}
-            className="inline-flex items-center gap-1.5 rounded bg-[color:var(--foreground)] px-4 py-2 text-sm font-semibold text-black hover:bg-white"
+            className="inline-flex items-center gap-2 rounded bg-[color:var(--foreground)] px-5 py-2.5 text-base font-semibold text-black hover:bg-white"
           >
-            <RotateCcw size={14} />
+            <RotateCcw size={16} />
             もう一度挑戦
           </button>
           <Link
             href={`/watch/${video.id}`}
-            className="inline-flex items-center gap-1.5 rounded bg-[color:var(--surface)] px-4 py-2 text-sm hover:bg-[color:var(--surface-hover)]"
+            className="inline-flex items-center gap-2 rounded bg-[color:var(--surface)] px-5 py-2.5 text-base hover:bg-[color:var(--surface-hover)]"
           >
-            <ExternalLink size={14} />
+            <ExternalLink size={16} />
             動画に戻る
           </Link>
           <Link
             href="/profile"
-            className="inline-flex items-center gap-1.5 rounded bg-[color:var(--surface)] px-4 py-2 text-sm hover:bg-[color:var(--surface-hover)]"
+            className="inline-flex items-center gap-2 rounded bg-[color:var(--surface)] px-5 py-2.5 text-base hover:bg-[color:var(--surface-hover)]"
           >
             マイページ
           </Link>
@@ -319,7 +321,7 @@ function QuizResult({
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold text-[color:var(--muted)]">
+        <h2 className="text-base font-semibold text-[color:var(--muted)]">
           回答レビュー
         </h2>
         <ol className="space-y-2">
@@ -329,19 +331,19 @@ function QuizResult({
             return (
               <li
                 key={q.id}
-                className="rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] p-3 text-sm"
+                className="rounded-md border border-[color:var(--border)] bg-[color:var(--surface)] p-4 text-base leading-relaxed"
               >
-                <div className="flex items-start gap-2">
+                <div className="flex items-start gap-3">
                   {isCorrect ? (
-                    <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-emerald-400" />
+                    <CheckCircle2 size={20} className="mt-0.5 shrink-0 text-emerald-400" />
                   ) : (
-                    <XCircle size={16} className="mt-0.5 shrink-0 text-rose-400" />
+                    <XCircle size={20} className="mt-0.5 shrink-0 text-rose-400" />
                   )}
                   <div className="min-w-0 flex-1">
-                    <div className="text-xs text-[color:var(--muted)]">Q{i + 1}</div>
+                    <div className="text-sm text-[color:var(--muted)]">Q{i + 1}</div>
                     <div className="font-medium">{q.question}</div>
                     {!isCorrect && (
-                      <div className="mt-1 text-xs text-[color:var(--muted)]">
+                      <div className="mt-1 text-sm text-[color:var(--muted)]">
                         正解: {q.choices[q.answerIndex]}
                       </div>
                     )}

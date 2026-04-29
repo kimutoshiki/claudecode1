@@ -16,14 +16,14 @@ export function TopNav() {
   const pathname = usePathname();
   return (
     <header className="sticky top-0 z-40 border-b border-[color:var(--border)] bg-background/80 backdrop-blur">
-      <div className="mx-auto flex h-14 w-full max-w-[1400px] items-center gap-6 px-6">
+      <div className="mx-auto flex h-16 w-full max-w-[1400px] items-center gap-6 px-6">
         <Link
           href="/"
-          className="text-xl font-bold tracking-tight text-[color:var(--accent)] hover:text-[color:var(--accent-hover)]"
+          className="text-2xl font-bold tracking-tight text-[color:var(--accent)] hover:text-[color:var(--accent-hover)]"
         >
           Shakai Flix
         </Link>
-        <nav className="hidden items-center gap-4 md:flex">
+        <nav className="hidden items-center gap-5 md:flex">
           {NAV_ITEMS.map((item) => {
             const active =
               item.href === "/"
@@ -34,7 +34,7 @@ export function TopNav() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "text-sm transition-colors hover:text-[color:var(--foreground)]",
+                  "text-base font-medium transition-colors hover:text-[color:var(--foreground)]",
                   active
                     ? "text-[color:var(--foreground)]"
                     : "text-[color:var(--muted)]",

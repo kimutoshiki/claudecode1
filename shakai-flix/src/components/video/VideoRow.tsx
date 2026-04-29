@@ -24,13 +24,13 @@ export function VideoRow({ title, subtitle, videos, emptyMessage }: VideoRowProp
   return (
     <section className="space-y-3">
       <div className="flex items-baseline gap-3 px-6">
-        <h2 className="text-lg font-semibold">{title}</h2>
+        <h2 className="text-2xl font-semibold">{title}</h2>
         {subtitle && (
-          <p className="text-xs text-[color:var(--muted)]">{subtitle}</p>
+          <p className="text-sm text-[color:var(--muted)]">{subtitle}</p>
         )}
       </div>
       {videos.length === 0 ? (
-        <p className="px-6 text-sm text-[color:var(--muted)]">
+        <p className="px-6 text-base text-[color:var(--muted)]">
           {emptyMessage ?? "まだ動画がありません。"}
         </p>
       ) : (

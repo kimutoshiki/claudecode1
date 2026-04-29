@@ -1,6 +1,11 @@
 import type { Quiz, QuizAttempt, QuizQuestion } from "./types";
 
-export const PASS_THRESHOLD = 8;
+export const PASS_RATIO = 0.8;
+
+export function passThresholdFor(total: number): number {
+  if (total <= 0) return 0;
+  return Math.ceil(total * PASS_RATIO);
+}
 
 export async function loadQuiz(videoId: string): Promise<Quiz | null> {
   const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -49,10 +54,11 @@ export function scoreAttempt(
     return { questionId: q.id, chosenIndex, correct };
   });
   const correctCount = details.filter((d) => d.correct).length;
+  const total = questions.length;
   return {
     correct: correctCount,
-    total: questions.length,
-    passed: correctCount >= PASS_THRESHOLD,
+    total,
+    passed: correctCount >= passThresholdFor(total),
     details,
   };
 }

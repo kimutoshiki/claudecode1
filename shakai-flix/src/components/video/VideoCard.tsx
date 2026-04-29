@@ -33,7 +33,7 @@ export function VideoCard({ video, size = "default" }: VideoCardProps) {
         "ring-1 ring-transparent transition-all duration-200",
         "hover:-translate-y-1 hover:scale-[1.03] hover:ring-[color:var(--accent)]",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)]",
-        size === "compact" ? "min-w-[180px]" : "min-w-[260px]",
+        size === "compact" ? "min-w-[200px]" : "min-w-[280px]",
       )}
       aria-label={`${video.title} — 視聴`}
     >
@@ -59,17 +59,17 @@ export function VideoCard({ video, size = "default" }: VideoCardProps) {
           </div>
         )}
       </div>
-      <div className="flex flex-col gap-1 p-3">
-        <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-[color:var(--muted)]">
-          <span className="rounded bg-black/40 px-1.5 py-0.5">
+      <div className="flex flex-col gap-1.5 p-4">
+        <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-[color:var(--muted)]">
+          <span className="rounded bg-black/40 px-2 py-0.5">
             {CATEGORY_LABEL[video.category]}
           </span>
           <span>{formatDuration(video.durationSec)}</span>
         </div>
-        <h3 className="line-clamp-2 text-sm font-semibold leading-snug">
+        <h3 className="line-clamp-2 text-base font-semibold leading-snug">
           {video.title}
         </h3>
-        <p className="text-xs text-[color:var(--muted)]">
+        <p className="text-sm text-[color:var(--muted)]">
           {video.series} · 第 {video.episode} 回
         </p>
       </div>

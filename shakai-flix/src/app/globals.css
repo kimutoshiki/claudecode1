@@ -20,7 +20,7 @@
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-border: var(--border);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-klee);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -30,15 +30,27 @@ body {
   color: var(--foreground);
 }
 
+html {
+  font-size: 17px;
+}
+
 body {
   font-family:
-    var(--font-geist-sans),
-    system-ui,
-    -apple-system,
+    var(--font-klee),
+    "UD デジタル 教科書体 N-R",
+    "UD Digi Kyokasho N-R",
+    "Yu Kyokasho",
+    "游教科書体",
+    "Hiragino Mincho ProN",
+    "Yu Gothic",
     "Hiragino Sans",
     "Noto Sans JP",
+    system-ui,
     sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.02em;
   -webkit-font-smoothing: antialiased;
+  line-height: 1.7;
 }
 
 ::selection {
