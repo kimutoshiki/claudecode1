@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Klee_One } from "next/font/google";
+import { BIZ_UDPGothic, Geist_Mono } from "next/font/google";
 import { FontSizeBoot } from "@/components/layout/FontSizeBoot";
 import { TopNav } from "@/components/layout/TopNav";
 import { withBasePath } from "@/lib/utils";
 import "./globals.css";
 
-const kleeOne = Klee_One({
-  variable: "--font-klee",
+const bizUDPGothic = BIZ_UDPGothic({
+  variable: "--font-jp",
   subsets: ["latin"],
-  weight: ["400", "600"],
+  weight: ["400", "700"],
   display: "swap",
 });
 
@@ -46,7 +46,7 @@ export default function RootLayout({
   return (
     <html
       lang="ja"
-      className={`${kleeOne.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${bizUDPGothic.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
         <FontSizeBoot />
